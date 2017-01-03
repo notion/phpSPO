@@ -128,22 +128,20 @@ class AuthenticationContext implements IAuthenticationContext
     }
 
     /**
-     * @param string $uri
-     * @param string $resource
+     * @param string $authorityUri
      * @param string $clientId
      * @param string $clientSecret
      * @param string $code
      * @param string $redirectUrl
      */
-    public function acquireTokenByAuthorizationCode($uri,$resource, $clientId, $clientSecret, $code, $redirectUrl)
+    public function acquireTokenByAuthorizationCode($authorityUri, $clientId, $clientSecret, $code, $redirectUrl)
     {
-        $this->provider = new OAuthTokenProvider($uri);
+        $this->provider = new OAuthTokenProvider($authorityUri);
         $parameters = array(
             'grant_type' => 'authorization_code',
             'client_id' => $clientId,
             'client_secret' => $clientSecret,
             'code' => $code,
-            'resource' => $resource,
             "redirect_uri" => $redirectUrl
         );
         $this->provider->acquireToken($parameters);

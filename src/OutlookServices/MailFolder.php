@@ -33,14 +33,14 @@ class MailFolder extends OutlookEntity
     /**
      * @return FolderCollection
      */
-    public function getChildFolders()
+    public function getChildFolders($folder_id = null)
     {
         if (!$this->isPropertyAvailable("ChildFolders")) {
             $this->setProperty("ChildFolders",
-                new FolderCollection($this->getContext(), new ResourcePathEntity(
+                new MailFolderCollection($this->getContext(), new ResourcePathEntity(
                     $this->getContext(),
                     $this->getResourcePath(),
-                    "ChildFolders"
+                    $folder_id ? ($folder_id . "/ChildFolders") : "ChildFolders"
                 )));
         }
 
