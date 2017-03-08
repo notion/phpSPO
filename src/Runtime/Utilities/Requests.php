@@ -1,6 +1,8 @@
 <?php
 namespace Office365\PHP\Client\Runtime\Utilities;
 
+use Notion\Adapter\Office365Client\Office365\RequestExecutor;
+use Notion\App\App;
 use Office365\PHP\Client\Runtime\HttpMethod;
 
 class Requests
@@ -24,16 +26,9 @@ class Requests
         $call = [];
         $call['request'] = $options->toArray();
 
-		$ch = Requests::init($options);
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $response = App::container()->get(RequestExecutor::class)->execute($options);
 
-        $call['response'] = $response;
-
-        if ($response === false) {
-            throw new \Exception(curl_error($ch));
-        }
-        curl_close($ch);
+		$call['response'] = $response;
 
         self::$history[] = $call;
 
@@ -90,7 +85,7 @@ class Requests
      * @param RequestOptions $options
      * @return resource [type]    [description]
      */
-    private static function init(RequestOptions $options)
+    public static function init(RequestOptions $options)
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $options->Url);

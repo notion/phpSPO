@@ -42,7 +42,7 @@ class ClientRequest
     /**
      * @var array
      */
-    protected $queries = array();
+    public $queries = array();
 
     /**
      * @var array
@@ -140,7 +140,7 @@ class ClientRequest
             //    call_user_func_array($this->eventsList["AfterExecuteQuery"],array($payload));
             //populate object
             if (array_key_exists($qry->getId(), $this->resultObjects)) {
-                $resultObject = $this->resultObjects[$qry->getId()];
+				$resultObject = $this->resultObjects[$qry->getId()];
                 if ($resultObject instanceof ListItemCollection && $responseType == FormatType::Xml) {
                     $resultObject->populateFromXmlPayload($response); //custom payload process
                 }else {

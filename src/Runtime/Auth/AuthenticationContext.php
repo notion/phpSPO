@@ -86,20 +86,18 @@ class AuthenticationContext implements IAuthenticationContext
     }
 
     /**
-     * @param $resource
      * @param $clientId
      * @param $clientSecret
      * @param $refreshToken
      * @param $redirectUri
      */
-    public function exchangeRefreshToken($resource, $clientId, $clientSecret, $refreshToken, $redirectUri)
+    public function exchangeRefreshToken($clientId, $clientSecret, $refreshToken, $redirectUri)
     {
         $this->provider = new OAuthTokenProvider($this->authorityUrl);
         $parameters = array(
             'grant_type' => 'refresh_token',
             'client_id' => $clientId,
             'client_secret' => $clientSecret,
-            'resource' => $resource,
             'redirect_uri' => $redirectUri,
             'refresh_token' => $refreshToken
         );

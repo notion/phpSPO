@@ -5,6 +5,7 @@ namespace Office365\PHP\Client\OutlookServices;
 use Office365\PHP\Client\Runtime\ClientActionInvokePostMethod;
 use Office365\PHP\Client\Runtime\ClientActionUpdateEntity;
 use Office365\PHP\Client\Runtime\OperationParameterCollection;
+use Office365\PHP\Client\Runtime\ResourcePathEntity;
 
 
 /**
@@ -64,6 +65,7 @@ class Message extends Item
         $payload->add("DestinationId",$destinationId);
         $qry = new ClientActionInvokePostMethod($this,"Move",null,$payload);
         $this->getContext()->addQuery($qry);
+        return $this;
     }
 
     /**
@@ -96,6 +98,22 @@ class Message extends Item
         $attachment = new $attachmentType($this->getContext());
         $this->Attachments[] = $attachment;
         return $attachment;
+    }
+
+    /**
+     * @return Attachment[]
+     */
+    public function getAttachments(){
+		if (!$this->isPropertyAvailable("Attachments")) {
+			$this->setProperty("Attachments",
+				new FileAttachmentCollection($this->getContext(), new ResourcePathEntity(
+					$this->getContext(),
+					$this->getResourcePath(),
+					"Attachments"
+				)));
+		}
+
+		return $this->getProperty("Attachments");
     }
 
 

@@ -67,9 +67,17 @@ class JsonPayloadSerializer
                 $jsonValue = $jsonValue->value;
             }
         }
-
+		$odataDeltaLink = '@odata.deltaLink';
+		if(isset(json_decode($value, 1)[$odataDeltaLink])) {
+			$payload->deltaLink = json_decode($value)->$odataDeltaLink;
+		}
+		$odataNextLink = '@odata.nextLink';
+		if(isset(json_decode($value, 1)[$odataNextLink])) {
+			$payload->nextLink = json_decode($value, 1)[$odataNextLink];
+		}
         if(isset($payload->EntityName))
             $jsonValue = $jsonValue->{$payload->EntityName};
+
         $payload->convertFromJson($jsonValue);
     }
 
