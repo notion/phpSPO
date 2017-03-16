@@ -13,17 +13,37 @@ try {
     $ctx = new ClientContext($Settings['Url'],$authCtx);
 
     $localPath = "../data/";
-    $targetLibraryTitle = "Documents Contoso";
+    $targetLibraryTitle = "Documents";
+    $targetFolderUrl = "/sites/contoso/Documents/Archive";
 
     $list = TestUtilities::ensureList($ctx,$targetLibraryTitle, \Office365\PHP\Client\SharePoint\ListTemplateType::DocumentLibrary);
-    uploadFiles($localPath,$list);
-    //processFiles($list,$localPath);
+    //enumFolders($list);
+    //uploadFiles($localPath,$list);
+    //$localFilePath = $localPath . "/SharePoint User Guide.docx";
+    //uploadFileIntoFolder($ctx,$localFilePath,$targetFolderUrl);
+    processFiles($list,$localPath);
     //deleteFolder($ctx,$folderUrl);
     //saveFile($ctx,$localFilePath,$fileUrl);
 
 }
 catch (Exception $e) {
     echo 'Error: ',  $e->getMessage(), "\n";
+}
+
+
+function enumFolders(SPList $list)
+{
+    $ctx = $list->getContext();
+    $folders = $list->getRootFolder()->getFolders();
+    if($folders->getServerObjectIsNull() == true){  //determine whether folders has been loaded or not
+        $ctx->load($folders);
+        $ctx->executeQuery();
+    }
+
+    foreach ($folders->getData() as $folder) {
+        print "File name: '{$folder->Name}'\r\n";
+    }
+
 }
 
 
@@ -98,6 +118,24 @@ function uploadFiles($localPath, \Office365\PHP\Client\SharePoint\SPList $target
     }
 
 
+}
+
+
+function uploadFileIntoFolder(ClientContext $ctx, $localPath, $targetFolderUrl)
+{
+    $fileName = basename($localPath);
+    $fileCreationInformation = new \Office365\PHP\Client\SharePoint\FileCreationInformation();
+    $fileCreationInformation->Content = file_get_contents($localPath);
+    $fileCreationInformation->Url = $fileName;
+
+
+    $uploadFile = $ctx->getWeb()->getFolderByServerRelativeUrl($targetFolderUrl)->getFiles()->add($fileCreationInformation);
+    $ctx->executeQuery();
+    print "File {$uploadFile->getProperty('Name')} has been uploaded\r\n";
+
+    //$uploadFile->getListItemAllFields()->setProperty('Title', $fileName);
+    //$uploadFile->getListItemAllFields()->update();
+    //$ctx->executeQuery();
 }
 
 function saveFile(ClientContext $ctx, $sourceFilePath, $targetFileUrl)

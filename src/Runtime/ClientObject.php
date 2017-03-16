@@ -261,6 +261,4 @@ class ClientObject extends ODataPayload
 	{
 		return isset($this->properties[$name]);
 	}
-
-
 }
