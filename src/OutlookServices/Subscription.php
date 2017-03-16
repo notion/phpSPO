@@ -24,4 +24,9 @@ abstract class Subscription extends OutlookEntity
      * @var string
      */
     public $ClientState;
+
+	/**
+	 * @var string
+	 */
+	public $NotificationURL;
 }

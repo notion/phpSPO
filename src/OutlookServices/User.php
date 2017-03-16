@@ -3,7 +3,9 @@
 
 namespace Office365\PHP\Client\OutlookServices;
 
+use Office365\PHP\Client\Runtime\ClientActionCreateEntity;
 use Office365\PHP\Client\Runtime\ClientActionInvokePostMethod;
+use Office365\PHP\Client\Runtime\ClientActionUpdateEntity;
 use Office365\PHP\Client\Runtime\ClientObject;
 use Office365\PHP\Client\Runtime\Office365Version;
 use Office365\PHP\Client\Runtime\OperationParameterCollection;
@@ -163,6 +165,45 @@ class User extends ClientObject
         return $this->getProperty("Subscriptions");
     }
 
+    /**
+     * @return PushSubscription
+     */
+    public function createSubscription($Resource, $ChangeType, $ClientState, $NotificationURL)
+    {
+        $subscription = new PushSubscription($this->getContext(), new ResourcePathEntity(
+			$this->getContext(),
+			$this->getResourcePath(),
+			"Subscriptions"
+		));
+
+        $subscription->Resource = $Resource;
+        $subscription->ChangeType = $ChangeType;
+        $subscription->ClientState = $ClientState;
+        $subscription->NotificationURL = $NotificationURL;
+        $subscription->addAnnotation('type', '#Microsoft.OutlookServices.PushSubscription');
+        $qry = new ClientActionCreateEntity($subscription, $subscription);
+        $this->getContext()->addQuery($qry, $subscription);
+        return $subscription;
+    }
+
+    /**
+     * @return PushSubscription
+     */
+    public function renewSubscription($subscription_id)
+    {
+        $subscription = new PushSubscription($this->getContext(), new ResourcePathEntity(
+			$this->getContext(),
+			$this->getResourcePath(),
+			"Subscriptions/" . $subscription_id
+		));
+
+        $three_days_from_now = time() + 3600 * 24;
+        $subscription->SubscriptionExpirationDateTime = date(\DateTime::ATOM, $three_days_from_now);
+        $subscription->addAnnotation('type', '#Microsoft.OutlookServices.PushSubscription');
+        $qry = new ClientActionUpdateEntity($subscription, $subscription);
+        $this->getContext()->addQuery($qry, $subscription);
+        return $subscription;
+    }
 
     /**
      * @return Calendar

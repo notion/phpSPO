@@ -183,7 +183,8 @@ class ClientRequest
             }else{
                 $message = "Unknown error";
             }
-            throw new Exception($message);
+
+			throw new Exception($message);
         }
         return FormatType::Json;
     }
