@@ -4,6 +4,7 @@
 namespace Office365\PHP\Client\OutlookServices;
 
 use Office365\PHP\Client\Runtime\ClientActionCreateEntity;
+use Office365\PHP\Client\Runtime\ClientActionDeleteEntity;
 use Office365\PHP\Client\Runtime\ClientActionInvokePostMethod;
 use Office365\PHP\Client\Runtime\ClientActionUpdateEntity;
 use Office365\PHP\Client\Runtime\ClientObject;
@@ -163,6 +164,20 @@ class User extends ClientObject
                 )));
         }
         return $this->getProperty("Subscriptions");
+    }
+
+
+    public function deleteSubscription($subscription_id)
+    {
+        $subscription = new PushSubscription($this->getContext(), new ResourcePathEntity(
+			$this->getContext(),
+			$this->getResourcePath(),
+			"Subscriptions/" . $subscription_id
+		));
+
+        $subscription->addAnnotation('type', '#Microsoft.OutlookServices.PushSubscription');
+        $qry = new ClientActionDeleteEntity($subscription, $subscription);
+        $this->getContext()->addQuery($qry, $subscription);
     }
 
     /**
