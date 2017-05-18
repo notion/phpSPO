@@ -155,10 +155,6 @@ class ClientObject extends ODataPayload
 					}
 				}
 			}
-			elseif (is_array($value))
-			{
-				$this->convertFromJson($value);
-			}
 			else
 			{
 				$this->setProperty($key, $value, false);
@@ -261,4 +257,5 @@ class ClientObject extends ODataPayload
 	{
 		return isset($this->properties[$name]);
 	}
+
 }
